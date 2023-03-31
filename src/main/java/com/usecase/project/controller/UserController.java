@@ -30,7 +30,7 @@ import com.usecase.project.service.Services;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 	
 	@Autowired
@@ -55,8 +55,8 @@ public class UserController {
 	}
 	
 	
-	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PutMapping("/updateuser/{id}")
+	
 	public ResponseEntity<UserDataTransfer> updateStudent(@RequestBody UserDataTransfer studentDataTransfer, @PathVariable int id)
 	{
 		UserDataTransfer studentDataTransfer2 =  this.services.updateStudent(studentDataTransfer, id);
@@ -64,7 +64,7 @@ public class UserController {
 	}
 	
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	
 	public ResponseEntity<?> deleteStudent(@PathVariable int id)
 	{
@@ -80,7 +80,7 @@ public class UserController {
 		return ResponseEntity.ok(this.services.getAllStudents());
 	}
 	
-	@GetMapping("/getst/{id}")
+	@GetMapping("/getbyid/{id}")
 	
 	public ResponseEntity<UserDataTransfer> getStudentbyId(@PathVariable int id)
 	{
