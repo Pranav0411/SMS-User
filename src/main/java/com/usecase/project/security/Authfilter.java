@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.usecase.project.config.UserInfoDetails;
+
 import com.usecase.project.service.Jwtservice;
 import com.usecase.project.service.UserUserDetailService;
 

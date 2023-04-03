@@ -2,14 +2,17 @@ package com.usecase.project.controller;
 
 import java.util.List;
 
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.usecase.project.model.User;
+import com.usecase.project.payload.JwtResponse;
 import com.usecase.project.payload.UserDataTransfer;
 import com.usecase.project.security.Authrequest;
 import com.usecase.project.service.Jwtservice;
@@ -41,6 +46,12 @@ public class UserController {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@GetMapping("/home")
 	public String home() {
@@ -93,28 +104,72 @@ public class UserController {
 		return ResponseEntity.ok(this.services.findByRole("ROLE_TEACHER"));
 	}
 	
-	@PostMapping("/authenticate")
-	public String authenticateandgettoken(@RequestBody Authrequest authrequest)
-	{
-		 boolean verified = services.roleVerification(authrequest.getUsername(), authrequest.getRole());
+//	@PostMapping("/authenticate")
+//	public String authenticateandgettoken(@RequestBody Authrequest authrequest)
+//	{
+	//	 boolean verified = services.roleVerification(authrequest.getUsername(), authrequest.getRole());
 		 
-		 if(verified) {
-		Authentication authentication =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authrequest.getUsername(), authrequest.getPassword()));
+	//	 if(verified) {
+	//	Authentication authentication =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authrequest.getUsername(), authrequest.getPassword()));
 		
-		if(authentication.isAuthenticated())
-		{
-			return jwtservice.generateToken(authrequest.getUsername());
-		}
-		 }
+	//	if(authentication.isAuthenticated())
+	//	{
+	//		return jwtservice.generateToken(authrequest.getUsername());
+		//}
+		// }
 		 
+		//else {
+			
+			//	throw new UsernameNotFoundException("Invalid User");
+		//	}
+		
+		//return null;
+		//}
+			
+	@PostMapping("/authenticate")
+	public ResponseEntity<JwtResponse> createToken(@RequestBody Authrequest request) throws Exception
+	{
+		boolean verified = services.roleVerification(request.getUsername(), request.getRole());
+		if(verified)
+		{
+		this.authenticate(request.getUsername(),request.getPassword());
+		
+		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
+		
+		String token = jwtservice.generateToken(userDetails);
+		
+		JwtResponse response = new JwtResponse();
+		response.setToken(token);
+		response.setUser(this.modelMapper.map((User)userDetails, UserDataTransfer.class));
+		return new ResponseEntity<JwtResponse>(response,HttpStatus.OK);
+		}
 		else {
 			
 				throw new UsernameNotFoundException("Invalid User");
 			}
+	}
+
+	private void authenticate(String email, String password) throws Exception {
 		
-		return null;
-		}
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+		
+		try {
+			this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 			
+		} catch (BadCredentialsException e) {
+			
+			System.out.println("Credentials are not correct");
+			throw new Exception("Invalid details");
+			// TODO: handle exception
+		}
+		
+		
+		
+			
+		
+		// TODO Auto-generated method stub
+		
+	}
 		
 		
 	}
