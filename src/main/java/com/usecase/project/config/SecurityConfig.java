@@ -39,7 +39,7 @@ public class SecurityConfig {
 	{
 		return http.cors().and().csrf().disable()
 				.authorizeHttpRequests()
-				.requestMatchers("/api/user/home" , "/api/user/create" , "/api/user/authenticate" , "/api/user/teacher" ,"/api/user/getall" , "/api/user/getbyid/{id}" ,  "/api/user/updateuser/{id}" , "/api/user/delete/{id}").permitAll()
+				.requestMatchers("/api/user/home" , "/api/user/create" , "/api/user/authenticate" , "/api/user/teacher" ,"/api/user/getall" , "/api/user/getbyid/{id}" ,  "/api/user/updateuser/{id}" , "/api/user/delete/{email}", "/api/user/updateuserbyEmail/{email}",  "/api/user/getbyEmail/{email}").permitAll()
 				.and()
 				.authorizeHttpRequests().requestMatchers("/api/user/**")
 				.authenticated()

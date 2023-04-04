@@ -74,12 +74,20 @@ public class UserController {
 		return ResponseEntity.ok(studentDataTransfer2);
 	}
 	
+@PutMapping("/updateuserbyEmail/{email}")
 	
-	@DeleteMapping("/delete/{id}")
-	
-	public ResponseEntity<?> deleteStudent(@PathVariable int id)
+	public ResponseEntity<UserDataTransfer> updateStudentByEmail(@RequestBody UserDataTransfer studentDataTransfer, @PathVariable String email)
 	{
-		this.services.deleteStudent(id);
+		UserDataTransfer studentDataTransfer2 =  this.services.updateStudentByEmail(studentDataTransfer, email);
+		return ResponseEntity.ok(studentDataTransfer2);
+	}
+	
+	
+	@DeleteMapping("/delete/{email}")
+	
+	public ResponseEntity<?> deleteStudent(@PathVariable String email)
+	{
+		this.services.deleteStudent(email);
 		return new ResponseEntity<String>("Student Deletion Success", HttpStatus.OK);
 	}
 	
@@ -91,11 +99,18 @@ public class UserController {
 		return ResponseEntity.ok(this.services.getAllStudents());
 	}
 	
-	@GetMapping("/getbyid/{id}")
+	@GetMapping("/getbyId/{id}")
 	
 	public ResponseEntity<UserDataTransfer> getStudentbyId(@PathVariable int id)
 	{
 		return ResponseEntity.ok(this.services.getStudentbyId(id));
+	}
+	
+	@GetMapping("/getbyEmail/{email}")
+	
+	public ResponseEntity<UserDataTransfer> getStudentByEmail(@PathVariable String email)
+	{
+		return ResponseEntity.ok(this.services.getStudentbyEmail(email));
 	}
 	
 	@GetMapping("/teacher")

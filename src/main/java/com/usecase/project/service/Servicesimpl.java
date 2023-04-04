@@ -67,9 +67,9 @@ public class Servicesimpl implements Services {
 	}
 
 	@Override
-	public void deleteStudent(int id) {
+	public void deleteStudent(String email) {
 		
-		User student = this.userrepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Student" , "Studentid" , id));
+		User student = this.userrepo.findByEmail(email);
 		this.userrepo.delete(student);
 		// TODO Auto-generated method stub
 		
@@ -121,5 +121,28 @@ public class Servicesimpl implements Services {
             return false;
         }
     }
+
+	@Override
+	public UserDataTransfer updateStudentByEmail(UserDataTransfer stdo, String email) {
+		User student = this.userrepo.findByEmail(email);
+		// TODO Auto-generated method stub
+		student.setName(stdo.getName());
+		student.setEmail(stdo.getEmail());
+		student.setRole(stdo.getRole());
+		student.setSubject(stdo.getSubject());
+		
+		
+		User updateStudent = this.userrepo.save(student);
+		UserDataTransfer stdo1 =  this.SttoDto(updateStudent);
+		
+		return stdo1;
+	}
+
+	@Override
+	public UserDataTransfer getStudentbyEmail(String email) {
+		User student = this.userrepo.findByEmail(email);
+		// TODO Auto-generated method stub
+		return this.SttoDto(student);
+	}
 
 }

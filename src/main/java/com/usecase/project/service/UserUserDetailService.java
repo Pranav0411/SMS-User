@@ -23,7 +23,7 @@ public class UserUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		User user = this.userrepo.findByEmail(username).orElseThrow(()-> new ResourceNotFoundException("Student","email"+username,0));
+		User user = this.userrepo.findByEmail(username);
 		//Optional<User> user = userrepo.findByEmail(username);
 		
 		//return user.map(UserInfoDetails::new).orElseThrow(()-> new UsernameNotFoundException("user not found"));

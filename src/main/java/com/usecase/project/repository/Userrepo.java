@@ -14,7 +14,8 @@ import com.usecase.project.model.User;
 	
 public interface Userrepo extends JpaRepository<User, Integer>{
 
-	Optional<User> findByEmail(String username);
+	//Optional<User> findByEmail(String username);
+	User findByEmail(String username);
 	
 	User findByEmailAndRole(String email,String Role);
 	
